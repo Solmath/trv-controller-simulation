@@ -4,6 +4,9 @@ close all
 
 valve_max = 1; % 100%
 
+Theta_0 = 5;
+Theta_set = 22;
+
 % Plant parameters
 T = 1200;
 K = 40; % Maximum possible temperature rise compared to outdoor temperature
@@ -26,8 +29,7 @@ margin(G_plant);
 title('Bode Plot of the Plant');
 grid on;
 
-Theta_0 = 5;
-Theta_set = 24;
+
 
 %% P-Controller
 Kp = 0.5;
@@ -42,7 +44,10 @@ Ki = 10;
 sim_heating_and_plot_results('PI-Controller (aggressive)');
 
 %% PI-Controller fast but robust
-% Ultra fast
+Kp = 0.049;
+Ki = 5.9e-5;
+
+% Ultra fast (starts oscillating if sample time of controller is too high)
 Kp = 0.44;
 Ki = 0.001;
 
@@ -68,10 +73,7 @@ set_param('heating/PID Controller','AntiWindupMode','clamping')
 sim_heating_and_plot_results('PI-Controller with clamping');
 set_param('heating/PID Controller', 'AntiWindupMode', 'none');
 
-%% PI slow
-% PID-Tuner
-% Kp = 0.049;
-% Ki = 5.9e-5;
+
 
 function sim_heating_and_plot_results(controller)
     % Simulate the Simulink model
